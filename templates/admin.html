@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理者画面</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <style>
+        table {
+            width: 50%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>ユーザーごとの結果</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ユーザー</th>
+                <th>時間 (秒)</th>
+                <th>誤差 (秒)</th>
+            </tr>
+        </thead>
+        <tbody id="resultsTable">
+            <tr><td>A</td><td id="A-time">-</td><td id="A-diff">-</td></tr>
+            <tr><td>B</td><td id="B-time">-</td><td id="B-diff">-</td></tr>
+            <tr><td>C</td><td id="C-time">-</td><td id="C-diff">-</td></tr>
+            <tr><td>D</td><td id="D-time">-</td><td id="D-diff">-</td></tr>
+            <tr><td>E</td><td id="E-time">-</td><td id="E-diff">-</td></tr>
+            <tr><td>F</td><td id="F-time">-</td><td id="F-diff">-</td></tr>
+            <tr><td>G</td><td id="G-time">-</td><td id="G-diff">-</td></tr>
+            <tr><td>H</td><td id="H-time">-</td><td id="H-diff">-</td></tr>
+        </tbody>
+    </table>
+
+    <script>
+        const socket = io();
+        let currentResults = {}; // すべてのユーザーの結果を保持
+
+        socket.on('update_results', (results) => {
+            // 新しいデータを currentResults に統合
+            Object.assign(currentResults, results);
+
+            for (const user of ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']) {
+                const timeCell = document.getElementById(`${user}-time`);
+                const diffCell = document.getElementById(`${user}-diff`);
+
+                if (currentResults[user] !== undefined) {
+                    const time = currentResults[user].toFixed(3);
+                    const diff = Math.abs(10 - currentResults[user]).toFixed(3);
+                    timeCell.textContent = time;
+                    diffCell.textContent = diff;
+                } else {
+                    timeCell.textContent = "-";
+                    diffCell.textContent = "-";
+                }
+            }
+        });
+    </script>
+</body>
+</html>

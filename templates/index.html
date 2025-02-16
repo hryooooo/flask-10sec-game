@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10秒チャレンジ</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+</head>
+<body>
+    <h1>10秒ピッタリゲーム</h1>
+    <label for="userSelect">ユーザーを選択:</label>
+    <select id="userSelect">
+        <option value="A">A</option>
+        <option value="B">B</option>
+        <option value="C">C</option>
+        <option value="D">D</option>
+        <option value="E">E</option>
+        <option value="F">F</option>
+        <option value="G">G</option>
+        <option value="H">H</option>
+    </select>
+    <br><br>
+    <button id="startBtn">開始</button>
+    <button id="stopBtn" disabled>ストップ</button>
+    <p id="message"></p>
+
+    <script>
+        const socket = io();
+        let startTime = null;
+
+        document.getElementById('startBtn').addEventListener('click', () => {
+            socket.emit('start_timer');
+        });
+
+        socket.on('timer_started', (serverTime) => {
+            startTime = serverTime * 1000;  // サーバーのtime.time()は秒単位なので、ミリ秒に変換
+            document.getElementById('stopBtn').disabled = false;
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('message').innerText = "タイマー開始！";
+        });
+
+        document.getElementById('stopBtn').addEventListener('click', () => {
+            if (startTime === null) return;
+            
+            const user = document.getElementById('userSelect').value;
+            const elapsed = (Date.now() - startTime) / 1000;  // 経過時間を秒単位で計算
+            
+            socket.emit('submit_time', { user: user, time: elapsed });
+            document.getElementById('stopBtn').disabled = true;
+        });
+    </script>
+</body>
+</html>
