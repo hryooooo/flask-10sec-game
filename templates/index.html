@@ -91,7 +91,10 @@
             document.getElementById('message').innerText = "終わり！";
 
             // インターバルを停止
-            clearInterval(timerInterval);
+            if (timerInterval !== null) {
+                clearInterval(timerInterval);  // 正しくインターバルを停止
+                timerInterval = null;  // インターバルIDをリセット
+            }
 
             document.getElementById('stopBtn').disabled = true;
         });
