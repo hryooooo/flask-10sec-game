@@ -74,7 +74,7 @@
             // 経過時間を表示するインターバルを開始
             timerInterval = setInterval(() => {
                 const elapsed = (Date.now() - startTime) / 1000;  // 経過時間を秒単位で計算
-                document.getElementById('elapsedTime').innerText = `経過時間: ${elapsed.toFixed(1)} 秒`;
+                document.getElementById('elapsedTime').innerText = `経過時間: ${elapsed.toFixed(10)} 秒`;
             }, 100);  // 100msごとに更新
         });
 
