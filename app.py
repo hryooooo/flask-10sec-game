@@ -32,8 +32,16 @@ def submit_time(data):
     formatted_time = float("{:.3f}".format(press_time))
     results[user] = formatted_time
 
-    # adminにだけ結果を送信
-    emit('update_results', results, room=request.sid)
+    # adminに結果を送信
+    emit('update_results', results, room="admin_room")
+
+# 管理者の接続を受け入れる
+@socketio.on('connect')
+def connect():
+    if request.path == '/admin':
+        # 管理者が接続した場合、admin_roomに参加
+        join_room("admin_room")
+
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=8000)
