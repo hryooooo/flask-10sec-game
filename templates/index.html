@@ -76,7 +76,7 @@
             timerInterval = setInterval(() => {
                 const elapsed = (Date.now() - startTime) / 1000;  // 経過時間を秒単位で計算
                 document.getElementById('elapsedTime').innerText = `経過時間: ${elapsed.toFixed(1)} 秒`;
-            }, 10);  // 10msごとに更新
+            }, 100);  // 100msごとに更新
         });
 
         document.getElementById('stopBtn').addEventListener('click', () => {
