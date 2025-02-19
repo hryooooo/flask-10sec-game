@@ -32,7 +32,8 @@ def submit_time(data):
     formatted_time = float("{:.3f}".format(press_time))
     results[user] = formatted_time
 
-    emit('update_results', results, broadcast=True)
+    # adminにだけ結果を送信
+    emit('update_results', results, room=request.sid)
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=8000)
