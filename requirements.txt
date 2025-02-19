@@ -34,7 +34,6 @@ Pygments==2.19.1
 python-dateutil==2.9.0.post0
 python-engineio==4.11.2
 python-socketio==5.12.1
-pywin32==308
 pyzmq==26.2.1
 simple-websocket==1.1.0
 six==1.17.0
