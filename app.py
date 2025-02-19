@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 import time
 
@@ -19,6 +19,7 @@ def admin():
 @socketio.on('start_timer')
 def start_timer():
     global start_time, results
+    print("タイマー開始イベントを受信")  # ここを追加
     start_time = time.time()  # タイマー開始時刻を記録
     results = {}  # リセット
     emit('timer_started', start_time, broadcast=True)
