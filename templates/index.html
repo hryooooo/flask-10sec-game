@@ -54,25 +54,33 @@
     <button id="startBtn">スタート</button>
     <button id="stopBtn" disabled>ストップ</button>
     <p id="message"></p>
+    <p id="elapsedTime">経過時間: 0.0 秒</p>  <!-- 経過時間表示用 -->
 
     <script>
         const socket = io();
         let startTime = null;
-    
+        let timerInterval = null;  // タイマーのインターバルID
+
         document.getElementById('startBtn').addEventListener('click', () => {
             socket.emit('start_timer');
         });
-    
+
         socket.on('timer_started', (serverTime) => {
             startTime = serverTime * 1000;  // サーバーのtime.time()は秒単位なので、ミリ秒に変換
             document.getElementById('stopBtn').disabled = false;
             document.getElementById('startBtn').disabled = true;
             document.getElementById('message').innerText = "タイマー開始！";
+
+            // 経過時間を表示するインターバルを開始
+            timerInterval = setInterval(() => {
+                const elapsed = (Date.now() - startTime) / 1000;  // 経過時間を秒単位で計算
+                document.getElementById('elapsedTime').innerText = `経過時間: ${elapsed.toFixed(1)} 秒`;
+            }, 100);  // 100msごとに更新
         });
-    
+
         document.getElementById('stopBtn').addEventListener('click', () => {
             if (startTime === null) return;
-    
+
             const user = document.getElementById('userSelect').value;
             const elapsed = (Date.now() - startTime) / 1000;  // 経過時間を秒単位で計算
             
@@ -80,10 +88,12 @@
             
             // 「終わり！」と表示
             document.getElementById('message').innerText = "終わり！";
-    
+
+            // インターバルを停止
+            clearInterval(timerInterval);
+
             document.getElementById('stopBtn').disabled = true;
         });
     </script>
-    
 </body>
 </html>
