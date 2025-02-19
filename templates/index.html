@@ -66,11 +66,12 @@
         });
 
         socket.on('timer_started', (serverTime) => {
+            console.log("タイマー開始:", serverTime);  // serverTimeが正しく受け取れているか確認
             startTime = serverTime * 1000;  // サーバーのtime.time()は秒単位なので、ミリ秒に変換
             document.getElementById('stopBtn').disabled = false;
             document.getElementById('startBtn').disabled = true;
             document.getElementById('message').innerText = "タイマー開始！";
-
+        
             // 経過時間を表示するインターバルを開始
             timerInterval = setInterval(() => {
                 const elapsed = (Date.now() - startTime) / 1000;  // 経過時間を秒単位で計算
