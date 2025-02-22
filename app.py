@@ -6,9 +6,8 @@ import eventlet
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet")
 
-start_time = None  # タイマー開始時刻（ミリ秒）
-results = {}  # 各ユーザーの結果
-timer_running = False  # タイマーの実行状態
+start_time = None  # タイマー開始時間
+results = {}  # ユーザーの結果を保存
 
 @app.route('/')
 def index():
@@ -20,35 +19,19 @@ def admin():
 
 @socketio.on('start_timer')
 def start_timer():
-    global start_time, results, timer_running
-    start_time = int(time.time() * 1000)  # サーバー時刻（ミリ秒）
+    global start_time, results
+    start_time = time.time()  # 秒単位
     results = {}  # 結果をリセット
-    timer_running = True  # タイマー開始
-
-    emit('timer_started', start_time, broadcast=True)  # クライアントに送信
-    socketio.start_background_task(send_server_time)  # サーバー時刻の送信を開始
-
-def send_server_time():
-    while timer_running:
-        try:
-            current_time = int(time.time() * 1000)  # 現在時刻（ミリ秒）
-            socketio.emit('server_time_update', current_time, broadcast=True)
-            eventlet.sleep(0.1)  # 100msごとに更新
-        except Exception as e:
-            print(f"Error in send_server_time: {e}")
-            break  # エラーが発生したらループを抜ける
+    emit('timer_started', start_time, broadcast=True)  # すべてのクライアントに送信
 
 @socketio.on('submit_time')
 def submit_time(data):
-    global timer_running
+    global start_time
     user = data['user']
-    press_time = int(time.time() * 1000)  # 押された時のサーバー時刻（ミリ秒）
+    server_elapsed = round(time.time() - start_time, 3)  # サーバー側の正確な経過時間
 
-    elapsed = (press_time - start_time) / 1000  # 経過時間（秒）
-    results[user] = round(elapsed, 3)
-
-    emit('update_results', results, broadcast=True)
-    timer_running = False  # タイマー停止
+    results[user] = server_elapsed
+    emit('update_results', results, room="admin_room")
 
 @socketio.on('connect')
 def handle_connect():
