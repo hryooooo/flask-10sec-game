@@ -75,17 +75,19 @@
             timerInterval = setInterval(updateElapsedTime, 100);
         });
     
+        // 経過時間を表示する関数
         function updateElapsedTime() {
             if (startTime === null) return;
             const elapsed = (Date.now() - startTime) / 1000;
-            document.getElementById('elapsedTime').innerText = `経過時間: ${elapsed.toFixed(2)} 秒`;
+            document.getElementById('elapsedTime').innerText = `経過時間: ${elapsed.toFixed(3)} 秒`;
         }
     
+        // ストップボタンが押されたときの処理
         document.getElementById('stopBtn').addEventListener('click', () => {
             if (startTime === null) return;
     
             const user = document.getElementById('userSelect').value;
-            const userElapsed = (Date.now() - startTime) / 1000; // ユーザーが計測した経過時間
+            const userElapsed = (Date.now() - startTime) / 1000;  // 現在の経過時間を計算
             
             // サーバーにユーザーの計測した経過時間と、サーバー側の開始時刻を送信
             socket.emit('submit_time', { user: user, elapsed: userElapsed, start_time: startTime });
@@ -93,8 +95,8 @@
             document.getElementById('message').innerText = "終わり！";
     
             if (timerInterval !== null) {
-                clearInterval(timerInterval);
-                timerInterval = null;
+                clearInterval(timerInterval);  // タイマーインターバルを停止
+                timerInterval = null;  // インターバルIDをリセット
             }
     
             document.getElementById('stopBtn').disabled = true;
