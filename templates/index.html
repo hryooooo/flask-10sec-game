@@ -60,6 +60,7 @@
         const socket = io();
         let startTime = null;
         let timerInterval = null;
+        let elapsedTime = 0;  // 経過時間を保持する変数
     
         document.getElementById('startBtn').addEventListener('click', () => {
             socket.emit('start_timer');
@@ -78,8 +79,8 @@
         // 経過時間を表示する関数
         function updateElapsedTime() {
             if (startTime === null) return;
-            const elapsed = (Date.now() - startTime) / 1000;
-            document.getElementById('elapsedTime').innerText = `経過時間: ${elapsed.toFixed(3)} 秒`;
+            elapsedTime = (Date.now() - startTime) / 1000;  // 現在の経過時間を計算
+            document.getElementById('elapsedTime').innerText = `経過時間: ${elapsedTime.toFixed(3)} 秒`;
         }
     
         // ストップボタンが押されたときの処理
@@ -87,10 +88,9 @@
             if (startTime === null) return;
     
             const user = document.getElementById('userSelect').value;
-            const userElapsed = (Date.now() - startTime) / 1000;  // 現在の経過時間を計算
             
-            // サーバーにユーザーの計測した経過時間と、サーバー側の開始時刻を送信
-            socket.emit('submit_time', { user: user, elapsed: userElapsed, start_time: startTime });
+            // 経過時間をそのまま送信
+            socket.emit('submit_time', { user: user, elapsed: elapsedTime, start_time: startTime });
             
             document.getElementById('message').innerText = "終わり！";
     
@@ -102,6 +102,5 @@
             document.getElementById('stopBtn').disabled = true;
         });
     </script>
-
 </body>
 </html>
