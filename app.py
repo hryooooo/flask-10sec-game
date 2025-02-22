@@ -32,7 +32,8 @@ def submit_time(data):
     client_start_time = data['start_time']  # クライアントのタイマー開始時刻
     
     # サーバー開始時刻とクライアント開始時刻の差を補正
-    corrected_time = user_elapsed + (start_time - client_start_time)
+    # corrected_time = user_elapsed + (start_time - client_start_time)
+    corrected_time = user_elapsed # + (start_time - client_start_time)
     
     # 結果を小数点以下3桁にフォーマットして保存
     results[user] = round(corrected_time, 4)  # 小数点以下4桁で保存
