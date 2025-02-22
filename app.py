@@ -30,9 +30,13 @@ def start_timer():
 
 def send_server_time():
     while timer_running:
-        current_time = int(time.time() * 1000)  # 現在時刻（ミリ秒）
-        socketio.emit('server_time_update', current_time, broadcast=True)
-        eventlet.sleep(0.1)  # 100msごとに更新
+        try:
+            current_time = int(time.time() * 1000)  # 現在時刻（ミリ秒）
+            socketio.emit('server_time_update', current_time, broadcast=True)
+            eventlet.sleep(0.1)  # 100msごとに更新
+        except Exception as e:
+            print(f"Error in send_server_time: {e}")
+            break  # エラーが発生したらループを抜ける
 
 @socketio.on('submit_time')
 def submit_time(data):
