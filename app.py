@@ -19,10 +19,10 @@ def admin():
 @socketio.on('start_timer')
 def start_timer():
     global start_time, results
-    print("タイマー開始イベントを受信")  # ここを追加
-    start_time = time.time()  # タイマー開始時刻を記録
+    print("タイマー開始イベントを受信")
+    start_time = int(time.time() * 1000)  # 秒→ミリ秒に変換
     results = {}  # リセット
-    emit('timer_started', start_time, broadcast=True)
+    emit('timer_started', start_time, broadcast=True)  # ミリ秒単位で送信
 
 @socketio.on('submit_time')
 def submit_time(data):
