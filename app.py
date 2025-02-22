@@ -29,14 +29,9 @@ def submit_time(data):
     global start_time
     user = data['user']
     user_elapsed = data['elapsed']  # ユーザーが計測した経過時間
-    client_start_time = data['start_time']  # クライアントのタイマー開始時刻
-    
-    # サーバー開始時刻とクライアント開始時刻の差を補正
-    # corrected_time = user_elapsed + (start_time - client_start_time)
-    corrected_time = user_elapsed # + (start_time - client_start_time)
     
     # 結果を小数点以下3桁にフォーマットして保存
-    results[user] = round(corrected_time, 4)  # 小数点以下4桁で保存
+    results[user] = round(user_elapsed, 4)  # 小数点以下4桁で保存
     emit('update_results', results, room="admin_room")
 
 @socketio.on('connect')
