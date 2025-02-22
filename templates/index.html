@@ -59,48 +59,46 @@
     <script>
         const socket = io();
         let startTime = null;
-        let timerInterval = null;  // タイマーのインターバルID
-
+        let timerInterval = null;
+    
         document.getElementById('startBtn').addEventListener('click', () => {
             socket.emit('start_timer');
         });
-
+    
         socket.on('timer_started', (serverTime) => {
-            console.log("タイマー開始:", serverTime);  
-            startTime = serverTime * 1000;  // 秒単位なのでミリ秒に変換
+            startTime = serverTime * 1000;
             document.getElementById('message').innerText = "タイマー開始！";
             document.getElementById('stopBtn').disabled = false;
             document.getElementById('startBtn').disabled = true;
-        
-            // **インターバル開始前に即座に経過時間を更新**
+            
+            // インターバル開始前に即座に経過時間を更新
             updateElapsedTime();
-        
+            
             // 100msごとに経過時間を更新
             timerInterval = setInterval(updateElapsedTime, 100);
         });
-        
-        // **現在の経過時間を即座に更新する関数**
+    
         function updateElapsedTime() {
             if (startTime === null) return;
             const elapsed = (Date.now() - startTime) / 1000;
             document.getElementById('elapsedTime').innerText = `経過時間: ${elapsed.toFixed(2)} 秒`;
         }
-
+    
         document.getElementById('stopBtn').addEventListener('click', () => {
             if (startTime === null) return;
-
+    
             const user = document.getElementById('userSelect').value;
-            socket.emit('submit_time', { user: user });  // 時間はサーバー側で計測
+            const userElapsed = (Date.now() - startTime) / 1000; // ユーザーが計測した経過時間
             
-            // 「終わり！」と表示
+            socket.emit('submit_time', { user: user, elapsed: userElapsed });  // ユーザー側で計測した時間をサーバーに送信
+            
             document.getElementById('message').innerText = "終わり！";
-
-            // インターバルを停止
+    
             if (timerInterval !== null) {
-                clearInterval(timerInterval);  // 正しくインターバルを停止
-                timerInterval = null;  // インターバルIDをリセット
+                clearInterval(timerInterval);  // インターバルを停止
+                timerInterval = null;
             }
-
+    
             document.getElementById('stopBtn').disabled = true;
         });
     </script>
