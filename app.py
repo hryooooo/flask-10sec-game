@@ -19,11 +19,11 @@ def admin():
 
 @socketio.on('start_timer')
 def start_timer():
-    user = request.args.get('user')  # クライアントから送られるユーザー名を取得
-    print(f"タイマー開始イベントを受信: {user}")
-    start_times[user] = int(time.time() * 1000)  # ユーザーごとに開始時刻を保存
-    results[user] = None  # 結果をリセット
-    emit('timer_started', {'user': user, 'start_time': start_times[user]}, broadcast=True)
+    global start_time, results
+    print("タイマー開始イベントを受信")
+    start_time = int(time.time() * 1000)  # 秒→ミリ秒に変換
+    results = {}  # リセット
+    emit('timer_started', start_time, broadcast=True)  # ミリ秒単位で送信
 
 @socketio.on('submit_time')
 def submit_time(data):
