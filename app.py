@@ -3,7 +3,7 @@ from flask_socketio import SocketIO, emit
 import time
 
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode="gevent")
 
 start_time = None  # タイマー開始時間
 results = {}
