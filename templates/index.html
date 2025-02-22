@@ -67,7 +67,7 @@
 
         socket.on('timer_started', (serverTime) => {
             console.log("タイマー開始:", serverTime);  
-            startTime = serverTime;  // ミリ秒単位なのでそのまま利用
+            startTime = serverTime * 1000;  // 秒単位なのでミリ秒に変換
             document.getElementById('message').innerText = "タイマー開始！";
             document.getElementById('stopBtn').disabled = false;
             document.getElementById('startBtn').disabled = true;
@@ -90,9 +90,7 @@
             if (startTime === null) return;
 
             const user = document.getElementById('userSelect').value;
-            const elapsed = (Date.now() - startTime) / 1000;  // 経過時間を秒単位で計算
-            
-            socket.emit('submit_time', { user: user, time: elapsed });
+            socket.emit('submit_time', { user: user });  // 時間はサーバー側で計測
             
             // 「終わり！」と表示
             document.getElementById('message').innerText = "終わり！";
