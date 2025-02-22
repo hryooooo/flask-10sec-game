@@ -66,15 +66,12 @@
         });
     
         socket.on('timer_started', (serverTime) => {
-            startTime = serverTime * 1000;
+            startTime = serverTime * 1000;  // サーバーでの開始時刻（ミリ秒単位）
             document.getElementById('message').innerText = "タイマー開始！";
             document.getElementById('stopBtn').disabled = false;
             document.getElementById('startBtn').disabled = true;
             
-            // インターバル開始前に即座に経過時間を更新
             updateElapsedTime();
-            
-            // 100msごとに経過時間を更新
             timerInterval = setInterval(updateElapsedTime, 100);
         });
     
@@ -90,12 +87,13 @@
             const user = document.getElementById('userSelect').value;
             const userElapsed = (Date.now() - startTime) / 1000; // ユーザーが計測した経過時間
             
-            socket.emit('submit_time', { user: user, elapsed: userElapsed });  // ユーザー側で計測した時間をサーバーに送信
+            // サーバーにユーザーの計測した経過時間と、サーバー側の開始時刻を送信
+            socket.emit('submit_time', { user: user, elapsed: userElapsed, start_time: startTime });
             
             document.getElementById('message').innerText = "終わり！";
     
             if (timerInterval !== null) {
-                clearInterval(timerInterval);  // インターバルを停止
+                clearInterval(timerInterval);
                 timerInterval = null;
             }
     
