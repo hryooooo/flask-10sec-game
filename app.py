@@ -20,16 +20,21 @@ def admin():
 @socketio.on('start_timer')
 def start_timer():
     global start_time, results
-    start_time = time.time()  # 秒単位
+    start_time = time.time()  # サーバー開始時刻（秒単位）
     results = {}  # 結果をリセット
     emit('timer_started', start_time, broadcast=True)  # すべてのクライアントに送信
 
 @socketio.on('submit_time')
 def submit_time(data):
+    global start_time
     user = data['user']
-    user_elapsed = data['elapsed']  # ユーザーが計測した時間
+    user_elapsed = data['elapsed']  # ユーザーが計測した経過時間
+    client_start_time = data['start_time']  # クライアントのタイマー開始時刻
     
-    results[user] = user_elapsed  # ユーザーの経過時間を記録
+    # サーバー開始時刻とクライアント開始時刻の差を補正
+    corrected_time = user_elapsed + (start_time - client_start_time)
+    
+    results[user] = corrected_time  # 補正後の時間を記録
     emit('update_results', results, room="admin_room")
 
 @socketio.on('connect')
