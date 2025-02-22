@@ -25,9 +25,14 @@ def start_timer():
 
 @socketio.on('submit_time')
 def submit_time(data):
+    global start_time
     user = data['user']
-    press_time = data['time']
-    results[user] = round(press_time, 3)
+    client_elapsed = round(data['time'], 3)
+    
+    # サーバー側で計測する実際の経過時間
+    server_elapsed = round((int(time.time() * 1000) - start_time) / 1000, 3)
+
+    results[user] = {"client_time": client_elapsed, "server_time": server_elapsed}
     emit('update_results', results, room="admin_room")
 
 @socketio.on('connect')
