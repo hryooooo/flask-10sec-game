@@ -42,15 +42,16 @@
     <script>
         const socket = io();
         let currentResults = {}; // すべてのユーザーの結果を保持
-
+    
         socket.on('update_results', (results) => {
+            console.log("更新された結果:", results);  // ここで結果が届いているか確認
             // 新しいデータを currentResults に統合
             Object.assign(currentResults, results);
-
+    
             for (const user of ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']) {
                 const timeCell = document.getElementById(`${user}-time`);
                 const diffCell = document.getElementById(`${user}-diff`);
-
+    
                 if (currentResults[user] !== undefined) {
                     const time = currentResults[user].toFixed(3);
                     const diff = Math.abs(10 - currentResults[user]).toFixed(3);
