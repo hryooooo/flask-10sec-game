@@ -7,7 +7,7 @@ app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode="gevent")
 
 start_time = None  # タイマー開始時間
-results = {}
+results = {}  # ユーザーごとの結果を格納
 
 @app.route('/')
 def index():
@@ -23,7 +23,7 @@ def start_timer():
     print("タイマー開始イベントを受信")
     start_time = int(time.time() * 1000)  # 秒→ミリ秒に変換
     results = {}  # リセット
-    emit('timer_started', start_time, broadcast=True)  # ミリ秒単位で送信
+    emit('timer_started', start_time, broadcast=True)  # 全てのクライアントにタイマー開始通知
 
 @socketio.on('submit_time')
 def submit_time(data):
