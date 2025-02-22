@@ -72,12 +72,20 @@
             document.getElementById('stopBtn').disabled = false;
             document.getElementById('startBtn').disabled = true;
         
-            // 経過時間を表示するインターバルを開始
-            timerInterval = setInterval(() => {
-                const elapsed = (Date.now() - startTime) / 1000;  // 秒単位に変換
-                document.getElementById('elapsedTime').innerText = `経過時間: ${elapsed.toFixed(2)} 秒`;
-            }, 100);
+            // **インターバル開始前に即座に経過時間を更新**
+            updateElapsedTime();
+        
+            // 100msごとに経過時間を更新
+            timerInterval = setInterval(updateElapsedTime, 100);
         });
+        
+        // **現在の経過時間を即座に更新する関数**
+        function updateElapsedTime() {
+            if (startTime === null) return;
+            const elapsed = (Date.now() - startTime) / 1000;
+            document.getElementById('elapsedTime').innerText = `経過時間: ${elapsed.toFixed(2)} 秒`;
+        }
+
 
         document.getElementById('stopBtn').addEventListener('click', () => {
             if (startTime === null) return;
