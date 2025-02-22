@@ -37,6 +37,12 @@ def submit_time(data):
     # adminに結果を送信
     emit('update_results', results, room="admin_room")
 
+@socketio.on('connect')
+def handle_connect():
+    # 管理者が接続した時に admin_room に参加
+    join_room("admin_room")
+    print("管理者が admin_room に参加しました")
+
 @socketio.on('join_admin_room')
 def join_admin():
     join_room("admin_room")
