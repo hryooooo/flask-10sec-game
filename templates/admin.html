@@ -54,11 +54,11 @@
 
     <script>
         const socket = io();
-
+    
         document.getElementById('adminStartBtn').addEventListener('click', () => {
             socket.emit('admin_start_timer');
         });
-
+    
         socket.on('update_results', (results) => {
             const tbody = document.getElementById('resultTableBody');
             tbody.innerHTML = '';
