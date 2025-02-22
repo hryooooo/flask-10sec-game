@@ -5,7 +5,7 @@ import time
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet")
 
-start_time = None  # タイマー開始時間
+start_time = None  # タイマー開始時間（ミリ秒）
 results = {}  # ユーザーの結果を保存
 
 @app.route('/')
@@ -19,7 +19,7 @@ def admin():
 @socketio.on('start_timer')
 def start_timer():
     global start_time, results
-    start_time = time.time()  # 秒単位
+    start_time = int(time.time() * 1000)  # サーバーの時刻（ミリ秒）
     results = {}  # 結果をリセット
     emit('timer_started', start_time, broadcast=True)  # すべてのクライアントに送信
 
@@ -27,10 +27,12 @@ def start_timer():
 def submit_time(data):
     global start_time
     user = data['user']
-    server_elapsed = round(time.time() - start_time, 3)  # サーバー側の正確な経過時間
+    press_time = int(time.time() * 1000)  # 押された時のサーバー時刻（ミリ秒）
 
-    results[user] = server_elapsed
-    emit('update_results', results, room="admin_room")
+    elapsed = (press_time - start_time) / 1000  # 経過時間を計算（秒単位）
+    results[user] = round(elapsed, 3)
+
+    emit('update_results', results, broadcast=True)
 
 @socketio.on('connect')
 def handle_connect():
