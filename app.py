@@ -35,5 +35,9 @@ def handle_connect():
     join_room("admin_room")
     emit('update_results', results, room="admin_room")
 
+@socketio.on('admin_start_timer')
+def admin_start_timer():
+    start_timer()
+
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=8000)
