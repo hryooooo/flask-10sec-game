@@ -88,9 +88,9 @@
     
             const user = document.getElementById('userSelect').value;
             const userElapsed = (Date.now() - startTime) / 1000;  // 現在の経過時間を計算
-
+            
             // サーバーにユーザーの計測した経過時間と、サーバー側の開始時刻を送信
-            socket.emit('submit_time', { user: user, elapsed: elapsed, start_time: startTime });
+            socket.emit('submit_time', { user: user, elapsed: userElapsed, start_time: startTime });
             
             document.getElementById('message').innerText = "終わり！";
     
@@ -102,5 +102,6 @@
             document.getElementById('stopBtn').disabled = true;
         });
     </script>
+
 </body>
 </html>
