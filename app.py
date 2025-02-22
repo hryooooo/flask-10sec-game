@@ -37,13 +37,10 @@ def submit_time(data):
     # adminに結果を送信
     emit('update_results', results, room="admin_room")
 
-# 管理者の接続を受け入れる
-@socketio.on('connect')
-def connect():
-    if request.path == '/admin':
-        # 管理者が接続した場合、admin_roomに参加
-        join_room("admin_room")
-
+@socketio.on('join_admin_room')
+def join_admin():
+    join_room("admin_room")
+    print("管理者が admin_room に参加しました")
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=8000)
