@@ -34,7 +34,8 @@ def submit_time(data):
     # サーバー開始時刻とクライアント開始時刻の差を補正
     corrected_time = user_elapsed + (start_time - client_start_time)
     
-    results[user] = corrected_time  # 補正後の時間を記録
+    # 結果を小数点以下3桁にフォーマットして保存
+    results[user] = round(corrected_time, 4)  # 小数点以下4桁で保存
     emit('update_results', results, room="admin_room")
 
 @socketio.on('connect')
