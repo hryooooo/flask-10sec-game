@@ -41,10 +41,6 @@
 
     <script>
         const socket = io();
-    
-        // 管理者は admin_room に参加
-        socket.emit("join_admin_room");
-    
         let currentResults = {}; // すべてのユーザーの結果を保持
 
         socket.on('update_results', (results) => {
