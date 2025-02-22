@@ -81,6 +81,11 @@
             if (startTime === null) return;
             elapsedTime = (Date.now() - startTime) / 1000;  // 現在の経過時間を計算
             document.getElementById('elapsedTime').innerText = `経過時間: ${elapsedTime.toFixed(3)} 秒`;
+            
+            // 10秒経過したら経過時間を非表示にする
+            if (elapsedTime >= 10) {
+                document.getElementById('elapsedTime').style.display = 'none';
+            }
         }
     
         // ストップボタンが押されたときの処理
