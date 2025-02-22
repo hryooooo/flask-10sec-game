@@ -54,35 +54,33 @@
     <button id="startBtn">スタート</button>
     <button id="stopBtn" disabled>ストップ</button>
     <p id="message"></p>
-    <p id="elapsedTime">経過時間: 00.00 秒</p>  <!-- 経過時間表示用 -->
+    <p id="elapsedTime">経過時間: 00.00 秒</p>  <!-- 経過時間表示 -->
     <p id="finalTime">あなたの結果: - 秒</p>  <!-- 最終結果表示 -->
 
     <script>
         const socket = io();
         let startTime = null;
-        let timerInterval = null;  // タイマーのインターバルID
+        let serverTime = null;
 
         document.getElementById('startBtn').addEventListener('click', () => {
             socket.emit('start_timer');
         });
 
-        socket.on('timer_started', (serverTime) => {
-            console.log("タイマー開始:", serverTime);  
-            startTime = serverTime;  // サーバー基準時刻（ミリ秒）
+        socket.on('timer_started', (serverStartTime) => {
+            console.log("タイマー開始:", serverStartTime);
+            startTime = serverStartTime;  // サーバー基準時刻（ミリ秒）
             document.getElementById('message').innerText = "タイマー開始！";
             document.getElementById('stopBtn').disabled = false;
             document.getElementById('startBtn').disabled = true;
-
-            // 100msごとに経過時間を更新
-            updateElapsedTime();
-            timerInterval = setInterval(updateElapsedTime, 100);
         });
 
-        function updateElapsedTime() {
-            if (startTime === null) return;
-            const elapsed = (Date.now() - startTime) / 1000;
-            document.getElementById('elapsedTime').innerText = `経過時間: ${elapsed.toFixed(2)} 秒`;
-        }
+        socket.on('server_time_update', (currentServerTime) => {
+            serverTime = currentServerTime;
+            if (startTime !== null) {
+                const elapsed = (serverTime - startTime) / 1000;
+                document.getElementById('elapsedTime').innerText = `経過時間: ${elapsed.toFixed(2)} 秒`;
+            }
+        });
 
         document.getElementById('stopBtn').addEventListener('click', () => {
             if (startTime === null) return;
@@ -91,16 +89,9 @@
             socket.emit('submit_time', { user: user });
 
             document.getElementById('message').innerText = "終わり！";
-
-            if (timerInterval !== null) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-            }
-
             document.getElementById('stopBtn').disabled = true;
         });
 
-        // サーバーから受け取った結果を表示
         socket.on('update_results', (results) => {
             const user = document.getElementById('userSelect').value;
             if (results[user] !== undefined) {
