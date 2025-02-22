@@ -36,43 +36,43 @@
         <thead>
             <tr>
                 <th>ユーザー</th>
-                <th>時間 (秒)</th>
+                <th>スマホ計測 (秒)</th>
+                <th>サーバー計測 (秒)</th>
                 <th>誤差 (秒)</th>
             </tr>
         </thead>
         <tbody id="resultsTable">
-            <tr><td>A</td><td id="A-time">-</td><td id="A-diff">-</td></tr>
-            <tr><td>B</td><td id="B-time">-</td><td id="B-diff">-</td></tr>
-            <tr><td>C</td><td id="C-time">-</td><td id="C-diff">-</td></tr>
-            <tr><td>D</td><td id="D-time">-</td><td id="D-diff">-</td></tr>
-            <tr><td>E</td><td id="E-time">-</td><td id="E-diff">-</td></tr>
-            <tr><td>F</td><td id="F-time">-</td><td id="F-diff">-</td></tr>
-            <tr><td>G</td><td id="G-time">-</td><td id="G-diff">-</td></tr>
-            <tr><td>H</td><td id="H-time">-</td><td id="H-diff">-</td></tr>
+            <tr><td>A</td><td id="A-client">-</td><td id="A-server">-</td><td id="A-diff">-</td></tr>
+            <tr><td>B</td><td id="B-client">-</td><td id="B-server">-</td><td id="B-diff">-</td></tr>
+            <tr><td>C</td><td id="C-client">-</td><td id="C-server">-</td><td id="C-diff">-</td></tr>
+            <tr><td>D</td><td id="D-client">-</td><td id="D-server">-</td><td id="D-diff">-</td></tr>
+            <tr><td>E</td><td id="E-client">-</td><td id="E-server">-</td><td id="E-diff">-</td></tr>
+            <tr><td>F</td><td id="F-client">-</td><td id="F-server">-</td><td id="F-diff">-</td></tr>
+            <tr><td>G</td><td id="G-client">-</td><td id="G-server">-</td><td id="G-diff">-</td></tr>
+            <tr><td>H</td><td id="H-client">-</td><td id="H-server">-</td><td id="H-diff">-</td></tr>
         </tbody>
     </table>
-
+    
     <script>
-        const socket = io();
-
-        document.getElementById('startTimerBtn').addEventListener('click', () => {
-            socket.emit('admin_start_timer');
-        });
-
         socket.on('update_results', (results) => {
             console.log("更新された結果:", results);
             
             for (const user of ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']) {
-                const timeCell = document.getElementById(`${user}-time`);
+                const clientCell = document.getElementById(`${user}-client`);
+                const serverCell = document.getElementById(`${user}-server`);
                 const diffCell = document.getElementById(`${user}-diff`);
     
                 if (results[user] !== undefined) {
-                    const time = results[user].toFixed(3);
-                    const diff = Math.abs(10 - results[user]).toFixed(3);
-                    timeCell.textContent = time;
+                    const clientTime = results[user].client_time.toFixed(3);
+                    const serverTime = results[user].server_time.toFixed(3);
+                    const diff = Math.abs(results[user].client_time - results[user].server_time).toFixed(3);
+    
+                    clientCell.textContent = clientTime;
+                    serverCell.textContent = serverTime;
                     diffCell.textContent = diff;
                 } else {
-                    timeCell.textContent = "-";
+                    clientCell.textContent = "-";
+                    serverCell.textContent = "-";
                     diffCell.textContent = "-";
                 }
             }
