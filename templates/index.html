@@ -55,6 +55,7 @@
     <button id="stopBtn" disabled>ストップ</button>
     <p id="message"></p>
     <p id="elapsedTime">経過時間: 00.00 秒</p>  <!-- 経過時間表示用 -->
+    <p id="finalTime">あなたの結果: - 秒</p>  <!-- 最終結果表示 -->
 
     <script>
         const socket = io();
@@ -67,19 +68,16 @@
 
         socket.on('timer_started', (serverTime) => {
             console.log("タイマー開始:", serverTime);  
-            startTime = serverTime * 1000;  // 秒単位なのでミリ秒に変換
+            startTime = serverTime;  // サーバー基準時刻（ミリ秒）
             document.getElementById('message').innerText = "タイマー開始！";
             document.getElementById('stopBtn').disabled = false;
             document.getElementById('startBtn').disabled = true;
-        
-            // **インターバル開始前に即座に経過時間を更新**
-            updateElapsedTime();
-        
+
             // 100msごとに経過時間を更新
+            updateElapsedTime();
             timerInterval = setInterval(updateElapsedTime, 100);
         });
-        
-        // **現在の経過時間を即座に更新する関数**
+
         function updateElapsedTime() {
             if (startTime === null) return;
             const elapsed = (Date.now() - startTime) / 1000;
@@ -90,18 +88,24 @@
             if (startTime === null) return;
 
             const user = document.getElementById('userSelect').value;
-            socket.emit('submit_time', { user: user });  // 時間はサーバー側で計測
-            
-            // 「終わり！」と表示
+            socket.emit('submit_time', { user: user });
+
             document.getElementById('message').innerText = "終わり！";
 
-            // インターバルを停止
             if (timerInterval !== null) {
-                clearInterval(timerInterval);  // 正しくインターバルを停止
-                timerInterval = null;  // インターバルIDをリセット
+                clearInterval(timerInterval);
+                timerInterval = null;
             }
 
             document.getElementById('stopBtn').disabled = true;
+        });
+
+        // サーバーから受け取った結果を表示
+        socket.on('update_results', (results) => {
+            const user = document.getElementById('userSelect').value;
+            if (results[user] !== undefined) {
+                document.getElementById('finalTime').innerText = `あなたの結果: ${results[user].toFixed(3)} 秒`;
+            }
         });
     </script>
 </body>
