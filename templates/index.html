@@ -9,7 +9,7 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            margin: 15px;
+            margin: 10px;
         }
         select, button {
             font-size: 1.8em;
@@ -33,7 +33,7 @@
         }
         p {
             font-size: 1.2em;
-            margin-top: 20px;
+            margin-top: 15px;
         }
     </style>
 </head>
@@ -68,7 +68,7 @@
     
         socket.on('timer_started', (serverTime) => {
             startTime = serverTime * 1000;  // サーバーでの開始時刻（ミリ秒単位）
-            document.getElementById('message').innerText = "タイマー開始！";
+            document.getElementById('message').innerText = "ストップを押して";
             document.getElementById('stopBtn').disabled = false;
             document.getElementById('startBtn').disabled = true;
             
