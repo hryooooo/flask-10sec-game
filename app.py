@@ -1,6 +1,6 @@
 import gevent
 from flask import Flask, render_template, request
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit, join_room
 import time
 
 app = Flask(__name__)
