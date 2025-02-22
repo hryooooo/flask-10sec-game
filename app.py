@@ -19,7 +19,7 @@ def admin():
 @socketio.on('start_timer')
 def start_timer():
     global start_time, results
-    start_time = int(time.time() * 1000)  # ミリ秒単位
+    start_time = time.time()  # 秒単位
     results = {}  # 結果をリセット
     emit('timer_started', start_time, broadcast=True)  # すべてのクライアントに送信
 
@@ -27,12 +27,9 @@ def start_timer():
 def submit_time(data):
     global start_time
     user = data['user']
-    client_elapsed = round(data['time'], 3)
-    
-    # サーバー側で計測する実際の経過時間
-    server_elapsed = round((int(time.time() * 1000) - start_time) / 1000, 3)
+    server_elapsed = round(time.time() - start_time, 3)  # サーバー側の正確な経過時間
 
-    results[user] = {"client_time": client_elapsed, "server_time": server_elapsed}
+    results[user] = server_elapsed
     emit('update_results', results, room="admin_room")
 
 @socketio.on('connect')
