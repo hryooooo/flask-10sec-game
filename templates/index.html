@@ -68,9 +68,9 @@
         socket.on('timer_started', (serverTime) => {
             console.log("タイマー開始:", serverTime);  
             startTime = serverTime;  // ミリ秒単位なのでそのまま利用
+            document.getElementById('message').innerText = "タイマー開始！";
             document.getElementById('stopBtn').disabled = false;
             document.getElementById('startBtn').disabled = true;
-            document.getElementById('message').innerText = "タイマー開始！";
         
             // 経過時間を表示するインターバルを開始
             timerInterval = setInterval(() => {
