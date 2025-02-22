@@ -43,10 +43,5 @@ def handle_connect():
     join_room("admin_room")
     print("管理者が admin_room に参加しました")
 
-@socketio.on('join_admin_room')
-def join_admin():
-    join_room("admin_room")
-    print("管理者が admin_room に参加しました")
-
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=8000)
